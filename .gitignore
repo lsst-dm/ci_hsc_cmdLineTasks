@@ -1,0 +1,11 @@
+.sconf_temp
+.sconsign.dblite
+config.log
+.scons
+DATA
+*.pyc
+.cache
+.pytest_cache
+pytest_session.txt
+.coverage
+job_job.log
