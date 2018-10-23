@@ -183,12 +183,6 @@ allData = {"HSC-R": [Data(903334, 16),
                      ],
           }
 
-# Set up the data repository
-mapper = env.Command(os.path.join(REPO, "_mapper"), [],
-                     ["mkdir -p " + REPO,
-                      "echo lsst.obs.hsc.HscMapper > " + os.path.join(REPO, "_mapper"),
-                      ])
-
 # Create skymap
 # This needs to be done early and in serial, so that the package versions produced by it aren't clobbered
 # by other commands in-flight.
@@ -303,7 +297,7 @@ mergeMeasurements = command("mergeMeasurements", measure,
                              ])
 
 # preForcedPhotCoadd step is a work-around for a race on schema/config/versions
-preForcedPhotCoadd = command("forcedPhotCoadd", [mapper, mergeMeasurements],
+preForcedPhotCoadd = command("forcedPhotCoadd", [mergeMeasurements],
                              getExecutable("meas_base", "forcedPhotCoadd.py") + " " + PROC + " " + STDARGS)
 def forcedPhotCoadd(filterName):
     return command("forced-coadd-" + filterName, [mergeMeasurements, preForcedPhotCoadd],
@@ -315,7 +309,7 @@ def forcedPhotCoadd(filterName):
 forcedPhotCoadd = [forcedPhotCoadd(ff) for ff in filterList]
 
 # preForcedPhotCcd step is a work-around for a race on schema/config/versions
-preForcedPhotCcd = command("forcedPhotCcd", [mapper, mergeMeasurements],
+preForcedPhotCcd = command("forcedPhotCcd", [mergeMeasurements],
                            getExecutable("meas_base", "forcedPhotCcd.py") + " " + PROC +
                            " -C forcedPhotCcdConfig.py" + " " + STDARGS)
 
